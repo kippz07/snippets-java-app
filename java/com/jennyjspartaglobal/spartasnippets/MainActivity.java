@@ -28,13 +28,23 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         refreshButton = (Button) findViewById(R.id.refresh);
 
         final LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(1, null, this);
+
+        try {
+            loaderManager.initLoader(1, null, this);
+        } catch (NullPointerException n) {
+            Log.e("InternetLog", "No Internet Connection");
+        }
+
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
+                    loaderManager.restartLoader(1, null, MainActivity.this);
+                } catch (NullPointerException n) {
+                    Log.e("InternetLog", "No Internet Connection");
+                }
 
-                loaderManager.restartLoader(1, null, MainActivity.this);
             }
         });
     }
@@ -47,8 +57,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Snippet> loader, Snippet snippets) {
-        questionTextView.setText(snippets.getQuestion());
-        answerTextView.setText(snippets.getAnswer());
+
+        try {
+            questionTextView.setText(snippets.getQuestion());
+            answerTextView.setText(snippets.getAnswer());
+        } catch (NullPointerException n) {
+            Log.e("InternetLog", "No Internet Connection");
+        }
+
     }
 
     @Override
